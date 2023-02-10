@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 class Category(models.Model):
@@ -26,3 +27,21 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name!r} {self.price!r}"
+
+
+class Reviews(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=500, verbose_name='Текст отзыва', help_text='Тут Ваш отзыв')
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', blank=True)
+
+    class Meta:
+        verbose_name_plural = ('Отзывы')
+        verbose_name = ('Отзыв')
+
+    def __str__(self):
+        return f'{self.user} - {self.product}'
+
+    def view_reviews(self):
+        return self.text if len(self.text) < 15 else (self.text[:15] + '...')
+    # view_reviews.short_description = 'Комментарий'
