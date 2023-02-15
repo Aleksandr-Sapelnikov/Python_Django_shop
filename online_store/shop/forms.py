@@ -7,9 +7,14 @@ class ReviewsForm(forms.ModelForm):
 
     class Meta:
         model = Reviews
-        fields ='text'
+        fields =('text',)
+        exclude = ('user',)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.fields['text'].widget = Textarea(attrs={'rows': 5})
+        self.fields['text'].widget = Textarea(attrs={'class': "form-textarea",
+                                                     'name': 'review',
+                                                     'id': 'review',
+                                                     'placeholder': 'Review'
+                                                     })

@@ -30,7 +30,7 @@ class Product(models.Model):
 
 
 class Reviews(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField(max_length=500, verbose_name='Текст отзыва', help_text='Тут Ваш отзыв')
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', blank=True)

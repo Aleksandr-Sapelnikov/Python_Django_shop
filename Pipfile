@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "*"
+django-filter = "*"
+django-spurl = "*"
 
 [dev-packages]
 

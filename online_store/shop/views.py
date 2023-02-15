@@ -1,35 +1,103 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views.generic.edit import FormMixin, FormView
+from cart.forms import CartAddProductForm
 from cart.cart import Cart
 from .models import Product, Reviews, Category
-from django.views.generic import DetailView, CreateView
+from django.views.generic import DetailView, CreateView, ListView
 from .forms import ReviewsForm
+from .filters import ProductFilter
 
 
 # добавление отзыва и перенаправление обратно на страницу продукта
-class AddReviews(CreateView):
+class AddReviews(FormView):
     model = Reviews
     template_name = 'shop/product.html'
     form_class = ReviewsForm
-    success_url = reverse_lazy('shop:product')
+    # success_url = reverse_lazy('shop:product', kwargs=pk)
+
+    def form_valid(self, form):
+        print(self.kwargs)
+        form_valid = super().form_valid(form)
+        obj = form.save(commit=False)
+        obj.user = User.objects.get(id=self.request.user.id)
+        obj.product = Product.objects.get(id=self.kwargs['pk'])
+        obj.save()
+        return form_valid
+
+    def get_success_url(self):
+        return reverse_lazy('shop:product', kwargs={'pk': self.kwargs['pk']})
 
 
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'shop/product.html'
     context_object_name = 'product'
-    # Тут будет реализована возможность добавления отзыва
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['form_add_']
 
-#Добавьте сервис интеграции с сервисом оплаты, создайте методы-заглушки для
-# работы этого сервиса. Сервис должен позволять:
-# ● оплатить указанный заказ;
-# ● получить статус оплаты заказа.
-# Опишите эти методы в сервисе и в его интерфейсе, реализуйте возврат
-# статичных данных этими методами.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['review_form'] = ReviewsForm()
+        context['cart_form'] = CartAddProductForm()
+
+        return context
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'shop/catalog.html'
+    paginate_by = 4
+    context_object_name = 'products'
+
+    def get_ordering(self):
+        ordering = self.request.GET.get('sorting')
+
+        print(ordering)
+        return ordering
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = ProductFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = self.filterset.form
+        # if self.ordering:
+        #     context['ordering'] = self.ordering
+        #     print(self.ordering)
+        # print(context)
+        # category = Category.objects.filter()
+
+        return context
+    # есть проблема (малая) сброс страниц и сортировки при смене фильтра,
+    # но фильтр не сбрасывается при сортировке и смене страниц
+
+
+class ProductCategory(ListView):
+    model = Product
+    template_name = 'shop/catalog.html'
+    paginate_by = 4
+    context_object_name = 'products'
+
+    def get_ordering(self):
+        ordering = self.request.GET.get('sorting')
+        print(ordering)
+        return ordering
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug'])
+        self.filterset = ProductFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = self.filterset.form
+        print(self.kwargs)
+        # category = Category.objects.filter()
+
+        return context
 
 
 @login_required

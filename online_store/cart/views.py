@@ -5,6 +5,16 @@ from django.views.decorators.http import require_POST
 from .cart import Cart
 from .forms import CartAddProductForm
 from shop.models import Product
+from django.urls import reverse_lazy
+
+
+def cart_add_in_catalog(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+
+    cart.add(product=product)
+
+    return redirect('shop:catalog')
 
 
 @require_POST

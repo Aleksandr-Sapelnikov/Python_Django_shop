@@ -1,6 +1,6 @@
 
 
-def reduce_quantity_product(prod, count):
+def reduce_quantity_product(prod, quantity):
     """Уменьшение количества продуктов"""
     # prod = Product.objects.get(id=product_id)
     print(f'{prod.name} - Количество в наличии: {prod.quantity}')

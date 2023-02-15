@@ -3,8 +3,9 @@ from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DetailView
 from .forms import RegisterForm
+from .models import Profile
 
 
 class UserLoginView(LoginView):
@@ -40,3 +41,14 @@ class UserSetPassword(PasswordChangeView):
 class UserSetPasswordDone(PasswordChangeDoneView):
     template_name = 'users/set_password_done.html'
     success_url = reverse_lazy('base')
+
+
+class ProfileView(DetailView):
+    template_name = 'users/account.html'
+    model = User
+    context_object_name = "user"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.filter(user=self.object)
+        return context
