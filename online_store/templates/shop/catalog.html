@@ -89,15 +89,14 @@
             </div>
 
             <div class="Sort-variants"><!--<a class="Sort-sortBy Sort-sortBy_dec" href="#">Популярности</a>-->
-                <!--<a class="Sort-sortBy" href="{% spurl base=request.get_full_path set_query='sorting=price' %}">Цена {{ products }}</a>
-                    {% if ordering == 'price' %}
-                <a class="Sort-sortBy Sort-sortBy_dec" href="{% spurl base=request.get_full_path set_query='sorting=-price' %}">Возрастанию цены</a>
-                    {% elif ordering == '-price' %}
-                <a class="Sort-sortBy Sort-sortBy_inc" href="{% spurl base=request.get_full_path set_query='sorting=' %}">Убыванию цены</a>
-                    {% endif %}
-                -->
-                <a class="Sort-sortBy Sort-sortBy_dec" href="{% spurl base=request.get_full_path set_query='sorting=price' %}">Возрастанию цены</a>
-                <a class="Sort-sortBy Sort-sortBy_inc" href="{% spurl base=request.get_full_path set_query='sorting=-price' %}">Убыванию цены</a>
+                {% if request.GET.sorting == 'price' %}
+                    <a class="Sort-sortBy Sort-sortBy_dec" href="{% spurl base=request.get_full_path set_query='sorting=-price' %}">Цена</a>
+                {% elif request.GET.sorting == '-price'%}
+                    <a class="Sort-sortBy Sort-sortBy_inc" href="{% spurl base=request.get_full_path set_query='sorting=' %}">Цена</a>
+                {% else %}
+                    <a class="Sort-sortBy" href="{% spurl base=request.get_full_path set_query='sorting=price' %}">Цена</a>
+
+                {% endif %}
 
             </div>
           </div>

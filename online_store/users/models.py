@@ -10,6 +10,11 @@ class Profile(models.Model):
     phone = models.CharField(blank=True, null=True, max_length=10, verbose_name='Телефон',
                              help_text='Введите без +7')
     fio = models.CharField(blank=True, null=True, max_length=60, verbose_name='ФИО')
+    p_img = models.ImageField(default='user_avatar/cat_1.jpg',
+                              upload_to='user_avatar/',
+                              null=True,
+                              blank=True
+                              )
 
     class Meta:
         verbose_name = 'Профиль'
@@ -18,6 +23,12 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+    # @property
+    # def get_photo_url(self):
+    #     if self.p_img and hasattr(self.p_img, 'url'):
+    #         return self.p_img.url
+    #     else:
+    #         return "/static/images/user.jpg"
 
 @receiver(post_save, sender=User)
 def save_or_create_profile(sender, instance, created, **kwargs):
