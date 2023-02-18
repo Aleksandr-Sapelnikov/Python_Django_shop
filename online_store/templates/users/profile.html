@@ -58,11 +58,19 @@
 
                     </label>
 
-                    <div class="Profile-avatar Profile-avatar_noimg">
-                      <div class="Profile-img"><img src="#" alt="#.png"/>
-                      </div>
-                      <label class="Profile-fileLabel" for="avatar">Выберите аватар
-                      </label>
+                    <div class="Profile-avatar">
+                        {% if user.profile.p_img %}
+                            <div class="Profile-img">
+                                <img src="{{ user.profile.p_img.url }}" alt="#.png"/>
+                            </div>
+                        {% else %}
+                            <div class="Profile-img"><img src="#" alt="#.png"/>
+                            </div>
+                            <label class="Profile-fileLabel" for="avatar">Выберите аватар
+                            </label>
+                        {% endif %}
+
+
                         {{ profile_form.p_img }}
                         {{ profile_form.p_img.errors }}
                       <!--<input class="Profile-file form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar"/> -->
