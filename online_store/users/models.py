@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 
+User._meta.get_field('email')._unique = True
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -29,6 +31,7 @@ class Profile(models.Model):
     #         return self.p_img.url
     #     else:
     #         return "/static/images/user.jpg"
+
 
 @receiver(post_save, sender=User)
 def save_or_create_profile(sender, instance, created, **kwargs):

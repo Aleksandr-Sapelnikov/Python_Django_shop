@@ -16,6 +16,10 @@ class UserLoginView(LoginView):
     template_name = 'users/login.html'
     success_url = reverse_lazy('/')
 
+    # def get_success_url(self):
+    #     print('путь', self.request.META.get('HTTP_REFERER'))
+    #     return self.request.META.get('HTTP_REFERER')
+
 
 class UserLogoutView(LogoutView):
     template_name = 'users/logout.html'
@@ -76,10 +80,10 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        if user.is_authenticated:
-            print('Авторизован')
-        else:
-            print('не авторизован')
+        # if user.is_authenticated:
+        #     print('Авторизован')
+        # else:
+        #     print('не авторизован')
         context['profile_form'] = ProfileUpdateForm(instance=self.request.user.profile,
                                                     initial={'fio': user.profile.fio,
                                                              'phone': user.profile.phone,
@@ -97,4 +101,4 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         user.email = email
         user.save()
         profile.save()
-        return  HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': self.get_object().id}))
+        return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': self.get_object().id}))

@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin, FormView
 from cart.forms import CartAddProductForm
 from cart.cart import Cart
-from .models import Product, Reviews, Category
+from .models import Product, Reviews, Category, Order, OrderItem
 from django.views.generic import DetailView, CreateView, ListView
-from .forms import ReviewsForm
+from .forms import ReviewsForm, OrderForm
 from .filters import ProductFilter
 
 
@@ -100,96 +101,37 @@ class ProductCategory(ListView):
         return context
 
 
-@login_required
-def order_create(request):
-    """Создание заказа из корзины"""
-    cart = Cart(request)
-    list_prod = {}
-    total_price = 0
-    pass
-    # Пока точно не проверил корзину, но нужно брать продукты из корзины, создать инстанс заказа или взять существующий
+class OrderCreateView(FormView):
+    model = Order
+    template_name = 'shop/order.html'
+    form_class = OrderForm
+    success_url = reverse_lazy('base')
 
-    # for product_id, product_count in request.session['cart'].items():
-    #     prod = Product.objects.get(id=product_id)
-    #     price = prod.price
-    #     total_price += price * product_count
-    #     list_prod[prod] = product_count
-    #     print(list_prod)
-    #
-    # try:
-    #     # instance = (Order.objects.prefetch_related("products").filter(status=False).get(user=request.user))
-    #     instance = (Order.objects.filter(status=False, user=request.user).first()) # как вариант для взятия первого
-    #     # instance = (Order.objects.filter(status=False).get(user=request.user))
-    #     print('Уже есть запись в базе', instance)
-    #     instance.products.set(list_prod)
-    #     instance.total_price = total_price
-    #     instance.save()
-    #     print('Обновленная запись', instance)
-    #     dict_to_str = json.dumps(request.session['cart'])
-    #     new_dict = OrderDict.objects.get(order_id=instance.id)
-    #     new_dict.cart_dict = dict_to_str
-    #     new_dict.save()
-    #     print('Словарь', new_dict)
-    #     print(json.loads(dict_to_str))
-    #
-    # # except ObjectDoesNotExist:
-    # except AttributeError:
-    #     instance = Order(user=request.user, total_price=total_price)
-    #     instance.save()
-    #     instance.products.set(list_prod)
-    #     instance.save()
-    #     print('Создан заказ', instance)
-    #     dict_to_str = json.dumps(request.session['cart'])
-    #     new_dict = OrderDict(cart_dict=dict_to_str, order_id=instance.id)
-    #     new_dict.save()
-    #     print('Словарь', new_dict)
-    #
-    # context = {
-    #     'cart': list_prod,
-    #     'total_price': total_price,
-    #     'order': instance
-    #
-    # }
-    # return render(request, 'app_shop/order.html', context=context)
+    def get_context_data(self, **kwargs):
+        context = super(OrderCreateView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_authenticated:
+            context['order_form'] = OrderForm(initial={'fio': user.profile.fio,
+                                                             'phone': user.profile.phone,
+                                                             'email': user.email})
+            print('Авторизован')
+        else:
+            context['order_form'] = OrderForm()
+            print('не авторизован')
+        return context
 
-
-@login_required
-def order_payment(request, pk):
-    """Оплата заказа указанного заказа"""
-    pass
-    # order_id = int(pk)
-    # order_dict = OrderDict.objects.get(order_id=order_id)
-    # order = (Order.objects.prefetch_related("products").get(id=order_id))
-    # # order = Order.objects.select_related("user").prefetch_related("products").filter(id=order_id, status=False)
-    # # order = (Product.objects.prefetch_related("order").filter(id=order_id).filter(status=False).all())
-    # print('заказ', order)
-    # products = order.products
-    # print(products)
-    # print(order.total_price)
-    # print(order.products.all())
-    # print(json.loads(order_dict.cart_dict))
-    # list_prod = {}
-    # total_price = 0
-    # try:
-    #     with transaction.atomic():
-    #         for product_id, product_count in json.loads(order_dict.cart_dict).items():
-    #             prod = Product.objects.get(id=product_id)
-    #             reduce_quantity_product(prod=prod, count=product_count)
-    #             price = prod.price
-    #             total_price += price * product_count
-    #             list_prod[prod] = product_count
-    #         print(list_prod)
-    #         print(total_price)
-    #
-    #         change_order_status(order)
-    #
-    #         reduce_user_balance(user=request.user, total_price=total_price)
-    #         request.session['cart'].clear()
-    #         request.session.save()
-    #         # return HttpResponse('Успех!!!')
-    #         order_dict.delete()
-    #         log.info('Оформление заказа')
-    #         return HttpResponseRedirect(reverse_lazy("app_shop:product_list"))
-    #
-    # except Exception:
-    #     return HttpResponse('Что-то пошло не так. Возможно стоит проверить баланс? Возможно закончился товар.')
+    def form_valid(self, form):
+        cart = Cart(self.request)
+        order = form.save(commit=False)
+        order.user = self.request.user
+        order.save()
+        print('заказ', order)
+        print('корзина', cart)
+        for item in cart:
+            OrderItem.objects.create(order=order,
+                                     product=item['product'],
+                                     price=item['price'],
+                                     quantity=item['quantity'])
+            print('создан объект заказа')
+        cart.clear()
+        return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': self.request.user.id}))

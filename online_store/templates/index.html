@@ -80,8 +80,8 @@
           <nav class="row-block">
             <div class="row ControlPanel-rowSplit">
                 {% if not request.user.is_authenticated %}
-              <div class="row-block"><a class="ControlPanel-title" href="{% url 'users:login' %}">Login</a></div>
-              <div class="row-block"><a class="ControlPanel-title" href="{% url 'users:register' %}">Register</a></div>
+              <div class="row-block"><a class="ControlPanel-title" href="{% url 'users:login' %}?next={% if request.path == '/users/logout/' %}{% url 'base' %}{% else %}{% firstof request.path '/' %}{% endif %}">Login</a></div>
+              <div class="row-block"><a class="ControlPanel-title" href="{% url 'users:register' %}?next={% if request.path == '/users/logout/' %}{% url 'base' %}{% else %}{% firstof request.path '/' %}{% endif %}">Register</a></div>
                 {% else %}
               <div class="row-block">Welcome {{ request.user.username }}</div>
               <div class="row-block"><a class="ControlPanel-title" href="{% url 'users:account' pk=user.pk %}">Account</a></div>
@@ -92,6 +92,8 @@
           </nav>
         </div>
       </div>
+
+
       <!--+div.menuModal#navigate
       //    +menu([
       //        ['Главная','index.html'],
