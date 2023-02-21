@@ -11,4 +11,6 @@ urlpatterns = [
     path('product/<int:pk>', views.ProductDetailView.as_view(), name='product'),
     path('product/<int:pk>/review', require_POST(views.AddReviews.as_view()), name='review'),
     path('order/create', views.OrderCreateView.as_view(), name='order_create'),
+    path('order/payment/<int:pk>/', views.payment, name='order_pay'),
+    path('order/progresspay', views.progress_pay, name='progress_pay'),
 ]

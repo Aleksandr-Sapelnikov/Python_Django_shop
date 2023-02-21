@@ -102,3 +102,5 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         user.save()
         profile.save()
         return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': self.get_object().id}))
+
+

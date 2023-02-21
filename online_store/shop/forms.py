@@ -48,3 +48,13 @@ class OrderForm(forms.ModelForm):
 
         self.fields['city'].widget = forms.TextInput(attrs={'class': 'form-input'})
         self.fields['address'].widget = forms.TextInput(attrs={'class': 'form-input'})
+
+
+class PayForm(forms.Form):
+    card_num = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-input Payment-bill form-input_error',
+    'id': 'numero1',
+    'placeholder': '9999 9999',
+    'data-mask': '9999 9999',
+    'data-validate': 'require pay'
+    }))

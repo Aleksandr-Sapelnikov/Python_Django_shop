@@ -18,13 +18,15 @@ from django.urls import path, include
 from .views import BaseView
 from django.conf import settings
 from django.conf.urls.static import static
-
+from shop.api import OrderAPIUpdate
 
 urlpatterns = [
     path('users/', include('users.urls')),
     path('cart/', include('cart.urls')),
     path('catalog/', include('shop.urls')),
     path('admin/', admin.site.urls),
+    path('api/v1/order/<int:pk>/', OrderAPIUpdate.as_view(), name='order'),
+    path('api/v1/order/auth/', include('rest_framework.urls')),
     path('', BaseView.as_view(), name='base'),
 
 ]

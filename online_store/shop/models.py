@@ -68,7 +68,10 @@ class Order(models.Model):
     # total_price = models.PositiveIntegerField(default=0, verbose_name="Итоговая цена")
     status = models.BooleanField(default=False, verbose_name='Оплачен')
     created = models.DateTimeField(auto_now_add=True)
+    error_text = models.CharField(max_length=100, blank=True, verbose_name='Ошибка')
 
+    # добавить поля стоимости для обычной доставки и для экспресс, чтобы можно было менять в админке.
+    # или лучше добавить новую модель с константами и записать туда цены на доставки и в теории можно будет еще что-то
     def __str__(self):
         return "Заказ ({})".format(self.id)
 
@@ -77,7 +80,13 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
     def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items.all())
+        if self.delivery_type == '1':
+            if sum(item.get_cost() for item in self.items.all()) >= 2000:
+                return sum(item.get_cost() for item in self.items.all())
+            else:
+                return sum(item.get_cost() for item in self.items.all()) + 200
+        else:
+            return sum(item.get_cost() for item in self.items.all()) + 500
 
 
 class OrderItem(models.Model):

@@ -8,6 +8,8 @@ django = "*"
 django-filter = "*"
 django-spurl = "*"
 pillow = "*"
+djangorestframework = "*"
+requests = "*"
 
 [dev-packages]
 
