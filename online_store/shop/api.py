@@ -13,7 +13,7 @@ class OrderAPIUpdate(APIView):
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk', None)
         print('запрос пришел', pk)
-        print(request.session.id)
+
         print(request.data['card_num'])
         card_num = int(request.data['card_num'].replace(' ', ''))
         last_num = int(str(card_num)[-1])

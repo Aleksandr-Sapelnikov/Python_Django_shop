@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
+    'huey.contrib.djhuey',
     'spurl',
     'shop',
     'users',
@@ -109,7 +111,11 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+
+    ),
 }
 
 # Internationalization
@@ -148,3 +154,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 MEDIA_URL = '/media/'
 
+HUEY = {
+    'name': 'online_store',
+    'url': 'redis://localhost:8000/?db=1',
+}
+HUEY['immediate_use_memory'] = False
+HUEY['immediate'] = False
