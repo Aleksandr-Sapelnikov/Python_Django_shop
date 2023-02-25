@@ -88,6 +88,24 @@ class Order(models.Model):
         else:
             return sum(item.get_cost() for item in self.items.all()) + 500
 
+    def get_delivery_type_name(self):
+        if self.delivery_type == '1':
+            return 'Обычная доставка'
+        else:
+            return 'Экспресс доставка'
+
+    def get_payment_method_name(self):
+        if self.delivery_type == '1':
+            return 'Картой онлайн'
+        else:
+            return 'Онлайн со случайного чужого счёта'
+
+    def get_status(self):
+        if self.status:
+            return 'Оплачен'
+        else:
+            return 'Не оплачен'
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, related_name='order_item', on_delete=models.CASCADE)

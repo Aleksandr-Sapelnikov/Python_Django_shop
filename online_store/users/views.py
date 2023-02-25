@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, DetailView
 from .forms import RegisterForm, ProfileUpdateForm
 from .models import Profile
+from shop.models import Order
 
 
 class UserLoginView(LoginView):
@@ -59,10 +60,10 @@ class ProfileView(LoginRequiredMixin, DetailView):
     # @method_decorator(login_required)
     # def dispatch(self, request, *args, **kwargs):
     #     super().dispatch(request, *args, **kwargs)
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['profile'] = Profile.objects.filter(user=self.object)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['last_order'] = Order.objects.filter(user=self.object).order_by('-created')[0]
+        return context
 
 
 class ProfileUpdate(LoginRequiredMixin, UpdateView):

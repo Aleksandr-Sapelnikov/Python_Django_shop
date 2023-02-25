@@ -1,6 +1,7 @@
 from time import sleep
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -221,6 +222,29 @@ def payment(request, pk):
 def progress_pay(request):
 
     if request.method == 'GET':
-        # sleep(3)
-        return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': request.user.id}))
+        # return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': request.user.id}))
+        return render(request, 'shop/progressPayment.html')
     return render(request, 'shop/progressPayment.html')
+
+
+class OrderHistoryView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'shop/historyorder.html'
+    paginate_by = 3
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(user=self.request.user).order_by('-created')
+
+        return queryset
+
+
+class OrderDetail(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'shop/oneorder.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_item'] = OrderItem.objects.filter(order=self.object)
+        return context

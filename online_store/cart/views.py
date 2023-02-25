@@ -51,14 +51,8 @@ def cart_detail(request):
     return render(request, 'cart/detail.html', {'cart': cart})
 
 
-# def cart_clear(request):
-#     request.session['cart'].clear()
-#     request.session.save()
-#     print(request.session['cart'])
-#     list_prod = {}
-#     total_price = 0
-#     context = {
-#         'cart': list_prod,
-#         'total_price': total_price
-#     }
-#     return render(request, 'cart/cart.html', context=context)
+def cart_clear(request):
+    cart = Cart(request)
+    cart.clear()
+
+    return redirect('cart:cart_detail')

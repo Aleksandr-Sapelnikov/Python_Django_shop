@@ -34,7 +34,8 @@
 
                   <input type="submit" value="Filter" class="btn btn_square btn_dark btn_narrow">
                   <p></p>
-
+              </form>
+                <!--
                 <div class="form-group">
                   <div class="range Section-columnRange">
                     <input class="range-line" id="price" name="price" type="text" data-type="double" data-min="0" data-max="100000" data-from="300" data-to="5000"/>
@@ -57,21 +58,24 @@
                     <input type="checkbox"/><span class="toggle-box"></span><span class="toggle-text">Только товары в наличии</span>
                   </label>
                 </div>
+
                 <div class="form-group">
                   <label class="toggle">
                     <input type="checkbox"/><span class="toggle-box"></span><span class="toggle-text">С бесплатной доставкой</span>
                   </label>
                 </div>
+                    -->
                 <div class="form-group">
-                  <div class="buttons"><a class="btn btn_square btn_dark btn_narrow" type="submit">Filter</a>
+                  <!--<div class="buttons"><a class="btn btn_square btn_dark btn_narrow" type="submit">Filter</a>
 
-                  </div>
+                  </div> -->
+
                 </div>
-              </form>
+
 
             </div>
           </div>
-          <div class="Section-columnSection">
+         <!-- <div class="Section-columnSection">
             <header class="Section-header">
               <strong class="Section-title">Popular tags
               </strong>
@@ -80,7 +84,7 @@
               <div class="buttons"><a class="btn btn_default btn_sm" href="#">Video</a><a class="btn btn_default btn_sm" href="#">Development</a><a class="btn btn_default btn_sm" href="#">Gaming</a><a class="btn btn_default btn_sm" href="#">Asus</a><a class="btn btn_default btn_sm" href="#">Development</a><a class="btn btn_default btn_sm" href="#">Video</a>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="Section-content">
         {% url 'shop:catalog' as url_catalog %}
@@ -105,7 +109,7 @@
             {% for product in products %}
             <div class="Card"><a class="Card-picture" href="{% url 'shop:product' pk=product.pk %}"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
               <div class="Card-content">
-                <strong class="Card-title"><a href="product.html">{{ product.name }}</a>
+                <strong class="Card-title"><a href="{% url 'shop:product' pk=product.pk %}">{{ product.name }}</a>
                 </strong>
                 <div class="Card-description">
                   <div class="Card-cost"><span class="Card-price">{{product.price}}</span>
@@ -126,11 +130,12 @@
         {% if is_paginated %}
           <div class="Pagination">
               {% if page_obj.has_previous %}
-            <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="{% spurl base=request.get_full_path set_query='page={{ page_obj.previous_page_number }}' %}"><img src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+                <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="{% spurl base=request.get_full_path set_query='page={{ page_obj.previous_page_number }}' %}"><img src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+                <a class="Pagination-element" href="{% spurl base=request.get_full_path set_query='page={{ page_obj.previous_page_number }}' %}"><span class="Pagination-text">{{ page_obj.previous_page_number }}</span></a>
               {% endif %}
-                  <a class="Pagination-element Pagination-element_current" href="#"><span class="Pagination-text">{{ page_obj.number }}</span></a>
-
+                <a class="Pagination-element Pagination-element_current" href="#"><span class="Pagination-text">{{ page_obj.number }}</span></a>
               {% if page_obj.has_next %}
+                  <a class="Pagination-element" href="{% spurl base=request.get_full_path set_query='page={{ page_obj.next_page_number }}' %}"><span class="Pagination-text">{{ page_obj.next_page_number }}</span></a>
                   <a class="Pagination-element Pagination-element_prev" href="{% spurl base=request.get_full_path set_query='page={{ page_obj.next_page_number }}' %}"><img src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/></a>
               {% endif %}
               </div>

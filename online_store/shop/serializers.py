@@ -10,6 +10,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.status = True
+        instance.error_text = ''
         instance.save()
         return instance
 

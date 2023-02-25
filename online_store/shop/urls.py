@@ -13,4 +13,6 @@ urlpatterns = [
     path('order/create', views.OrderCreateView.as_view(), name='order_create'),
     path('order/payment/<int:pk>/', views.payment, name='order_pay'),
     path('order/progresspay', views.progress_pay, name='progress_pay'),
+    path('order/history', views.OrderHistoryView.as_view(), name='order_history'),
+    path('order/detail/<int:pk>/', views.OrderDetail.as_view(), name='order_detail'),
 ]

@@ -50,25 +50,35 @@
               </div>
 
             <form action="{% url 'cart:cart_add' product.id %}" method="post">
-                {{ cart_form }}
-                {% csrf_token %}
-                <input type="submit" value="В корзину">
+
 
               <div class="ProductCard-cart">
                 <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                   <div class="Amount Amount_product">
 
+                    {% csrf_token %}
+                    <!--<input type="submit" value="В корзину"> -->
+
                     <button class="Amount-remove" type="button">
                     </button>
-                    <input class="Amount-input form-input" name="amount" type="text" value="1"/>
+                      {{ cart_form.quantity }}
+                    <!--<input class="Amount-input form-input" name="amount" type="text" value="1"/> -->
                     <button class="Amount-add" type="button">
                     </button>
 
                   </div>
                 </div>
-                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="#">
+                <div class="ProductCard-cartElement">
+
+                    <button class="btn btn_primary" type="submit">
+                    <a class="btn btn_primary" type="submit">
                     <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"/>
-                    <span class="btn-content">Add To Cart</span></a>
+                    <span class="btn-content" type="submit">Add To Cart</span></a></button>
+
+                <!--
+                    <a class="btn btn_primary" href="#">
+                    <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"/>
+                    <span class="btn-content" type="submit">Add To Cart</span></a> -->
                 </div>
               </div>
                 </form>
@@ -82,7 +92,9 @@
             </div>
           </div>
           <div class="Tabs Tabs_default">
-            <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a><a class="Tabs-link" href="#reviews"><span>Reviews ({{ product.reviews.count }})</span></a>
+            <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link" href="#description"><span>Описание</span></a>
+              <!-- <a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a> -->
+                <a class="Tabs-link" href="#reviews"><span>Reviews ({{ product.reviews.count }})</span></a>
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description">
@@ -92,7 +104,7 @@
                     <strong>В наличии: {{ product.quantity }} шт.</strong>
                 </p><img class="pict pict_right" src="{% static 'assets/img/content/home/bigGoods.png' %}" alt="bigGoods.png"/>
 
-                <div class="clearfix">
+                <!--<div class="clearfix">
                 </div>
                 <div class="table">
                   <table>
@@ -109,13 +121,13 @@
                       </td>
                     </tr>
                   </table>
-                </div>
+                </div> -->
               </div>
               <div class="Tabs-block" id="sellers">
                 <div class="Categories Categories_product">
                 </div>
               </div>
-              <div class="Tabs-block" id="addit">
+             <div class="Tabs-block" id="addit">
                 <div class="Product-props">
                   <div class="Product-prop">
                     <strong>Lorem
@@ -135,11 +147,13 @@
                   </div>
                 </div>
               </div>
+
               <div class="Tabs-block" id="reviews">
                 <header class="Section-header">
                   <h3 class="Section-title">{{ product.reviews.count }} Reviews
                   </h3>
                 </header>
+
                 {% for rev in product.reviews.all %}
                 <div class="Comments">
                   <div class="Comment">
@@ -194,6 +208,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
 {% endblock middle %}

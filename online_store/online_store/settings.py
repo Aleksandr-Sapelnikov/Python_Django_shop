@@ -156,7 +156,7 @@ MEDIA_URL = '/media/'
 
 HUEY = {
     'name': 'online_store',
-    'url': 'redis://localhost:8000/?db=1',
+    'url': 'redis://localhost:6379/?db=1',
 }
 HUEY['immediate_use_memory'] = False
 HUEY['immediate'] = False

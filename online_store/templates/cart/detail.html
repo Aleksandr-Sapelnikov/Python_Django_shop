@@ -6,6 +6,7 @@
     <div class="Section">
       <div class="wrap">
     <h1>Ваша корзина товаров</h1>
+      {% if cart %}
   <table class="cart">
     <thead>
       <tr>
@@ -48,10 +49,20 @@
         </tr>
     </tbody>
   </table>
+
   <p class="text-right">
-    <a href="#" class="btn">Продолжить Шопинг</a>
-    <a href="{% url 'shop:order_create' %}">Оформить заказ</a>
+    <a href="{% url 'shop:catalog' %}" class="btn">Продолжить Шопинг</a>
   </p>
+  <div class="buttons"><a class="btn btn_square btn_dark btn_narrow" href="{% url 'cart:cart_clear' %}">Очистить корзину</a></div>
+
+  <!--<div class="Order-footer"><a class="btn btn_primary btn_lg" href="{% url 'shop:catalog' %}">Продолжить Шопинг</a></div> -->
+  <div class="Order-footer"><a class="btn btn_primary btn_lg" href="{% url 'shop:order_create' %}">Оформить заказ</a></div>
+
+      {% else %}
+        <p>Ваша корзина сейчас пуста</p>
+          <a href="{% url 'shop:catalog' %}" class="btn">Вернуться в магазин</a>
+      {% endif %}
+
       </div>
     </div>
     </div>
