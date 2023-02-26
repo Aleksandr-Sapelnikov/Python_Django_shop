@@ -9,7 +9,7 @@
           <h1 class="Middle-title">Профиль
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="../index.html">home</a>
+            <li class="breadcrumbs-item"><a href="{% url 'base' %}">home</a>
             </li>
             <li class="breadcrumbs-item breadcrumbs-item_current"><span>Профиль</span>
             </li>
@@ -32,7 +32,7 @@
                   </li>
                   <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'users:profile_update' pk=user.pk %}">Профиль</a>
                   </li>
-                  <li class="menu-item"><a class="menu-link" href="#">История заказов</a>
+                  <li class="menu-item"><a class="menu-link" href="{% url 'shop:order_history' %}">История заказов</a>
                   </li>
 
                 </ul>
@@ -54,7 +54,7 @@
               <div class="row">
                 <div class="row-block">
                   <div class="form-group">
-                    <label class="form-label" for="avatar">{{ profile_form.p_img.label }}
+                    <label class="form-label" for="avatar">Аватар профиля<!--{{ profile_form.p_img.label }}-->
 
                     </label>
 
@@ -116,9 +116,10 @@
                     <div class="Profile-btn">
                       <button class="btn btn_success" type="submit">Сохранить
                       </button>
-                    </div>
+                    <!--</div>
                     <div class="Profile-success">Профиль успешно сохранен
-                    </div>
+                    </div>-->
+                  </div>
                   </div>
                 </div>
               </div>

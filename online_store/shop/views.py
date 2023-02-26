@@ -17,6 +17,8 @@ from .filters import ProductFilter
 from shop.api import OrderAPIUpdate
 import requests
 from rest_framework.authtoken.models import Token
+from django.contrib import messages
+
 
 # добавление отзыва и перенаправление обратно на страницу продукта
 class AddReviews(FormView):
@@ -94,7 +96,12 @@ class ProductCategory(ListView):
         return ordering
 
     def get_queryset(self):
-        queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug'])
+        order = self.get_ordering()
+        if order:
+            queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug']).order_by(order)
+        else:
+            queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug']).order_by('name')
+
         self.filterset = ProductFilter(self.request.GET, queryset=queryset)
         return self.filterset.qs
 

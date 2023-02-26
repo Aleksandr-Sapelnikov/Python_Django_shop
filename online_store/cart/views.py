@@ -6,6 +6,7 @@ from .cart import Cart
 from .forms import CartAddProductForm
 from shop.models import Product
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 
 def cart_add_in_catalog(request, product_id):

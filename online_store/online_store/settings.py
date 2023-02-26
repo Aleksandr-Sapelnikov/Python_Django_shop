@@ -160,3 +160,5 @@ HUEY = {
 }
 HUEY['immediate_use_memory'] = False
 HUEY['immediate'] = False
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

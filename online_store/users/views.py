@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
@@ -56,7 +57,6 @@ class ProfileView(LoginRequiredMixin, DetailView):
     template_name = 'users/account.html'
     model = User
     context_object_name = "user"
-
     # @method_decorator(login_required)
     # def dispatch(self, request, *args, **kwargs):
     #     super().dispatch(request, *args, **kwargs)
@@ -77,6 +77,8 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     #     super().dispatch(request, *args, **kwargs)
     # def get_success_url(self):
     #     return reverse_lazy('users:account', kwargs={'pk': self.get_object().id})
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -102,6 +104,6 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         user.email = email
         user.save()
         profile.save()
-        return HttpResponseRedirect(reverse_lazy('users:account', kwargs={'pk': self.get_object().id}))
+        return HttpResponseRedirect(reverse_lazy('users:profile_update', kwargs={'pk': self.get_object().id}))
 
 
