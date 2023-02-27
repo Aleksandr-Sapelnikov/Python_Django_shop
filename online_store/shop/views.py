@@ -18,6 +18,7 @@ from shop.api import OrderAPIUpdate
 import requests
 from rest_framework.authtoken.models import Token
 from django.contrib import messages
+from online_store.config import URL_API
 
 
 # добавление отзыва и перенаправление обратно на страницу продукта
@@ -101,7 +102,7 @@ class ProductCategory(ListView):
             queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug']).order_by(order)
         else:
             queryset = Product.objects.filter(category__slug=self.kwargs['cat_slug']).order_by('name')
-
+        # Product.objects.filter(name__startswith='')
         self.filterset = ProductFilter(self.request.GET, queryset=queryset)
         return self.filterset.qs
 
@@ -171,50 +172,17 @@ def payment(request, pk):
         if user == request.user:
             if form.is_valid():
                 card_num = form.cleaned_data.get('card_num')
-                # Проблема: любой юзер может оплатить любой заказ
                 s = requests.Session()
                 Token.objects.get_or_create(user=request.user)
                 token = Token.objects.get(user=request.user)
-                print(token)
-                print(token.key)
+
                 s.headers = {'Authorization': 'Token ' + token.key}
                 print(s.headers)
-                # print(s.id)
-                #url = 'http://127.0.0.1:8000/api/v1/order/{}/ Authorization: Base {}'.format(str(pk), request.session.session_key)
-                url = 'http://127.0.0.1:8000/api/v1/order/{}/'.format(str(pk))
-                #data = {'login': request.user.username, 'password': request.user.password}
-                #data = {'session_key': request.session.session_key}
-                # headers = {'Authorization': 'Basic ' + request.session.session_key}
-                # r = s.post('http://127.0.0.1:8000/api/v1/order/auth/login/', auth=('user', 'pass'))
-                URL = 'http://127.0.0.1:8000/api/v1/order/auth/login/'
-                s.get(URL)  # sets cookie
-                if 'csrftoken' in s.cookies:
-                    # Django 1.6 and up
-                    csrftoken = s.cookies['csrftoken']
-                else:
-                    # older versions
-                    csrftoken = s.cookies['csrf']
-
-                # login_data = dict(username=request.user.username, password=request.user.password, csrfmiddlewaretoken=csrftoken)
-                login_data = dict(csrfmiddlewaretoken=csrftoken)
-                # print(s.auth)
-                # s.id = request.session.session_key
-                # r = s.post(URL, data=login_data, headers=dict(Referer=URL))
-                # r = s.post(URL, data=login_data, headers=headers)
-                # print('++++++++++++++++++++++++++++++++++++++login', r.status_code)
-
-                # print(r.cookies)
+                url = URL_API.format(str(pk))
 
                 r = s.post(url, json={"card_num": card_num})
                 print('++++++++++++++++++++++++++++++++++++++post', r.status_code)
-
-
-                print(request.session.session_key)
-                # data={'card_num': card_num, 'pk': pk}
-                #{"card_num": card_num}
-
                 print(r.text)
-                # print(r.json())
 
             return HttpResponseRedirect(reverse_lazy('shop:progress_pay'))
         else:
